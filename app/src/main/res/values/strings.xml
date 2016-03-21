@@ -1,11 +1,14 @@
 <resources>
     <string name="app_name">PopularMovies</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="pref_sync">sync</string>
-    <string name="pref_sync_summ">sync_sum</string>
-    <string name="pref_syncConnectionType">syncConnec</string>
-    <string name="pref_syncConnectionTypes_default">ghi</string>
-
+    <string name="pref_sort_key">sort</string>
+    <string-array name="pref_sort_list">
+        <item>Most Popular</item>
+        <item>Highest Rated</item>
+    </string-array>
+    <string-array name="pref_sort_list_values">
+        <item>popularity</item>
+        <item>vote_count</item>
+    </string-array>
+    <string name="pref_sort_title">Sort by</string>
+    <string name="pref_sort_default">popularity</string>
 </resources>

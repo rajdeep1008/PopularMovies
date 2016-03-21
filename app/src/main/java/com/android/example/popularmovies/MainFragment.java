@@ -2,10 +2,14 @@ package com.android.example.popularmovies;
 
 
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.res.TypedArrayUtils;
@@ -40,10 +44,10 @@ import butterknife.ButterKnife;
  */
 public class MainFragment extends Fragment {
 
-    GridView mGridView;
-    List<Movie> moviesList;
-    ProgressDialog mProgressDialog;
-    MoviesAdapter adapter;
+    private GridView mGridView;
+    private List<Movie> moviesList;
+    private ProgressDialog mProgressDialog;
+    private MoviesAdapter adapter;
 
     private final String TAG = MainActivity.class.getSimpleName();
 
@@ -53,6 +57,13 @@ public class MainFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        moviesList.clear();
+        adapter.notifyDataSetChanged();
         new FetchMovies().execute();
     }
 
@@ -60,7 +71,19 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
+
+        moviesList = new ArrayList<>();
+        adapter = new MoviesAdapter(getActivity(), moviesList);
         mGridView = (GridView) view.findViewById(R.id.movie_grid);
+        mGridView.setAdapter(adapter);
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(getActivity(), DetailsActivity.class);
+                intent.putExtra("movie", moviesList.get(i));
+                startActivity(intent);
+            }
+        });
         return view;
     }
 
@@ -87,9 +110,14 @@ public class MainFragment extends Fragment {
             URL url;
             int result = 0;     // zero denotes failure initially
             final String APIID_PARAM = "api_key";
+            final String SORT_PARAM = "sort_by";
+
+            SharedPreferences preference = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String sortType = preference.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_default));
 
             Uri builtUri = Uri.parse(Constants.BASE_URL).buildUpon()
                     .appendQueryParameter(APIID_PARAM, Constants.apiKey)
+                    .appendQueryParameter(SORT_PARAM, sortType + ".desc")
                     .build();
             try {
                 url = new URL(builtUri.toString());
@@ -151,7 +179,6 @@ public class MainFragment extends Fragment {
                 adapter = new MoviesAdapter(getActivity(), moviesList);
                 mGridView.setAdapter(adapter);
                 mProgressDialog.dismiss();
-                Toast.makeText(getActivity(), "successful", Toast.LENGTH_LONG).show();
             } else {
                 mProgressDialog.dismiss();
                 Toast.makeText(getActivity(), "Download failed", Toast.LENGTH_LONG).show();
@@ -178,6 +205,7 @@ public class MainFragment extends Fragment {
                     Movie tempMovie = new Movie(title, language, posterUrl, bannerUrl,
                             overview, rating, releaseDate);
                     moviesList.add(tempMovie);
+//                    Log.e(TAG, tempMovie.getImageUrl());
                 }
 
             } catch (JSONException e) {

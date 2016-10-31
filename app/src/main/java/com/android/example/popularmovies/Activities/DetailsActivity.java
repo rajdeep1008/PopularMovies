@@ -1,4 +1,4 @@
-package com.android.example.popularmovies;
+package com.android.example.popularmovies.Activities;
 
 import android.graphics.Color;
 import android.os.Build;
@@ -9,9 +9,9 @@ import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.example.popularmovies.Models.Movie;
+import com.android.example.popularmovies.R;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

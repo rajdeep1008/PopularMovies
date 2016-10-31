@@ -1,4 +1,4 @@
-package com.android.example.popularmovies;
+package com.android.example.popularmovies.Activities;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -9,6 +9,8 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+
+import com.android.example.popularmovies.R;
 
 
 /**
